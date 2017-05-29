@@ -1,0 +1,2 @@
+# lejos-ev3
+SSOO TEAM, SOGANG UNIV
