@@ -10,7 +10,7 @@ public class line_tracer {
 		init();
 	}
 	public boolean isBlack(){
-		if(light_sensor.getLight() <= 0.25)
+		if(light_sensor.getLight() <= 0.40)
 			return true;
 		else 
 			return false;

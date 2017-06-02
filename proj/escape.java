@@ -15,7 +15,7 @@ public class escape {
 				wheel_actuator.rotate(10);
 				mia++;
 			}
-			if(mia >= 5 ){
+			if(mia >= 25 ){
 				break;
 			}
 		}
