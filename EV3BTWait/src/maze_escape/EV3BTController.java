@@ -1,5 +1,6 @@
-package EV3BTWait;
+package maze_escape;
 
+import escape;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -8,12 +9,13 @@ import lejos.hardware.lcd.LCD;
 import lejos.remote.nxt.NXTConnection;
 //import lejos.remote.nxt.BTConnection;
 import lejos.remote.nxt.BTConnector;
+
 public class EV3BTController  {
 	static BTConnector connector = new BTConnector();
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		Boolean isRunning = true;
+		Boolean isRunning = false;
 
 		// Main loop   
 		//while (true)
@@ -37,16 +39,19 @@ public class EV3BTController  {
 		  // The InputStream for read data 
 		  DataInputStream dis = btc.openDataInputStream();
 
+		  Byte n = dis.readByte();
+		  if((int)n==83){
+			    LCD.clear();
+				LCD.drawString("START",4,4);
+				LCD.refresh();
+				isRunning = true;
+				escape.run();
+		  }
 
 		  // Loop for read data                                                 
 		  while(isRunning){
 		   Byte n = dis.readByte();
 		   
-		   if((int)n==83){
-			   LCD.clear();
-				LCD.drawString("START",4,4);
-				LCD.refresh();
-		   }
 		   else if((int)n==80){
 			   LCD.clear();
 				LCD.drawString("STOP",4,4);
