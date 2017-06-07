@@ -9,11 +9,15 @@ public class line_tracer {
 	public line_tracer(){
 		init();
 	}
-	public boolean isBlack(){
-		if(light_sensor.getLight() <= 0.40)
+	public boolean isOnline(){
+		if(light_sensor.getLight() <= 0.4){
+			System.out.println(light_sensor.getLight());
 			return true;
-		else 
+		}
+		else {
+			System.out.println(light_sensor.getLight());
 			return false;
+		}
 	}
 	private void init() {
 		// TODO Auto-generated method stub
