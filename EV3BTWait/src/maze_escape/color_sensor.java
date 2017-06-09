@@ -66,12 +66,12 @@ public class color_sensor {
 			wheel_actuator.rotate(-27);
 			wheel_actuator.forward(0.5);
 		}
-		wheel_actuator.rotate(-27);
-		save_path.angle -=81;
+		wheel_actuator.rotate(-20);
+		save_path.angle -=74;
 		save_path.changeDirection(save_path.angle);
 
 		wheel_actuator.forward(0.5);
-		wheel_actuator.forward(3.5);
+		wheel_actuator.forward(4);
 		save_path.saveToPath(save_path.current_dir);
 		save_path.saveToPath(save_path.current_dir);
 	}
