@@ -1,6 +1,7 @@
 package maze_escape;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import lejos.hardware.lcd.LCD;
@@ -45,7 +46,7 @@ public class MainActivity{
 class EV3BTwaiting extends Thread{
 	
 	SharedArea sa_write;
-	NXTConnection btc;
+	static NXTConnection btc;
 	
 	
 	public void run(){
@@ -56,34 +57,42 @@ class EV3BTwaiting extends Thread{
 
 		Byte n;
 		try {
+			
 			n = dis.readByte();
-			if ((int) n == 83) {
+			//System.out.println(dis.available());
+			System.out.println(n);
+			if (n==1) {
 				LCD.clear();
 				LCD.drawString("START", 4, 4);
 				LCD.refresh();
 				sa_write.isEscaping = true;
+			
 			}
+			dis.close();
 			
 			while (sa_write.isRunning) {
-				System.out.println("here");
-				if (dis.available() == 1) {
-					System.out.println("Waiting");
-					n = dis.readByte();
 
-					if ((int) n == 80) {
-						LCD.clear();
-						LCD.drawString("STOP", 4, 4);
-						LCD.refresh();
-						sa_write.isEscaping = false;
-					} else if ((int) n == 82) {
-						LCD.clear();
-						LCD.drawString("Restart", 4, 4);
-						LCD.refresh();
-						sa_write.isEscaping = true;
-					}
+				n = dis.readByte();
+				if(n==-1) continue;
+				System.out.println(n);
+				if (n == 2) {
+					LCD.clear();
+					LCD.drawString("STOP", 4, 4);
+					LCD.refresh();
+					sa_write.isEscaping = false;
+				} else if (n == 3) {
+					LCD.clear();
+					LCD.drawString("Restart", 4, 4);
+					LCD.refresh();
+					sa_write.isEscaping = true;
+				} else if(n == 4){
+					LCD.clear();
+					LCD.drawString("END",4, 4);
+					break;
 				}
-				else
-					continue;
+				
+				dis.close();
+
 			}
 
 			dis.close();
@@ -106,7 +115,19 @@ class EV3BTwaiting extends Thread{
 		}
 		
 	}
+	public static void send_res(){
+		DataOutputStream dos = btc.openDataOutputStream();
+		
+		try {
+			LCD.drawInt(5,4,5);
+			dos.writeInt(5);
+			dos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+	}
 }
 
 class EV3mazeescpae extends Thread{
@@ -136,6 +157,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
+								EV3BTwaiting.send_res();
 								break;
 							}
 							else
@@ -156,6 +178,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
+								EV3BTwaiting.send_res();
 								break;
 							}
 							else
