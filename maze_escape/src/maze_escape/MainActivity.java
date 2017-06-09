@@ -6,10 +6,11 @@ import java.io.IOException;
 import lejos.hardware.lcd.LCD;
 import lejos.remote.nxt.BTConnector;
 import lejos.remote.nxt.NXTConnection;
-import lejos.utility.Delay;
 
+//Shared Data between two threads
 class SharedArea{
 	public boolean isRunning;
+	public boolean isEscaping;
 }
 
 public class MainActivity{
@@ -17,14 +18,16 @@ public class MainActivity{
 	
 	public static void main(String[] args) {
 		SharedArea sa = new SharedArea();
-
+		
 		EV3BTwaiting thread1 = new EV3BTwaiting();
 		EV3mazeescpae thread2 = new EV3mazeescpae();
 		
-		sa.isRunning=false;
+		sa.isRunning=true;
+		sa.isEscaping=false;
 		thread1.sa_write = sa;
 		thread2.sa_read = sa;
-
+		
+		//Connect to android app with BT
 		LCD.drawString("ReadyforBT", 0, 1);
 		LCD.refresh();
 		thread1.btc = connector.waitForConnection(10000, NXTConnection.RAW);
@@ -58,35 +61,41 @@ class EV3BTwaiting extends Thread{
 				LCD.clear();
 				LCD.drawString("START", 4, 4);
 				LCD.refresh();
-				sa_write.isRunning = true;
+				sa_write.isEscaping = true;
 			}
 			
-			while (true) {
-				n = dis.readByte();
+			while (sa_write.isRunning) {
+				System.out.println("here");
+				if (dis.available() == 1) {
+					System.out.println("Waiting");
+					n = dis.readByte();
 
-				if ((int) n == 80) {
-					LCD.clear();
-					LCD.drawString("STOP", 4, 4);
-					LCD.refresh();
-					sa_write.isRunning=false;
-				} else if ((int) n == 82) {
-					LCD.clear();
-					LCD.drawString("Restart", 4, 4);
-					LCD.refresh();
-					sa_write.isRunning=true;
+					if ((int) n == 80) {
+						LCD.clear();
+						LCD.drawString("STOP", 4, 4);
+						LCD.refresh();
+						sa_write.isEscaping = false;
+					} else if ((int) n == 82) {
+						LCD.clear();
+						LCD.drawString("Restart", 4, 4);
+						LCD.refresh();
+						sa_write.isEscaping = true;
+					}
 				}
+				else
+					continue;
 			}
 
-			//dis.close();
+			dis.close();
 
-			// Wait for data to drain
+			//Wait for data to drain
 			//Thread.sleep(100);
 
-			//LCD.clear();
-			//LCD.drawString("Closing", 0, 1);
-			//LCD.refresh();
+			LCD.clear();
+			LCD.drawString("Closing", 4, 4);
+			LCD.refresh();
 
-			//btc.close();
+			btc.close();
 
 			//LCD.clear();
 			// }
@@ -104,12 +113,13 @@ class EV3mazeescpae extends Thread{
 	SharedArea sa_read;
 	
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		float color;
 		line_tracer tracer = new line_tracer();
 		save_path.changeDirection(save_path.angle);
-		while (true) {
-			while (sa_read.isRunning) {
+		while (sa_read.isRunning) {
+			while (sa_read.isEscaping) {
+				System.out.println("There");
 				color = color_sensor.getColor();
 				if(color!=-1){ // 벽이 있는 경우
 				
@@ -120,14 +130,13 @@ class EV3mazeescpae extends Thread{
 							color = color_sensor.getColor();
 							if(color_sensor.isBlackBarrier(color)){
 								wheel_actuator.stop();
-								System.out.println("ESCAPE!");
-								System.out.println(save_path.index);
-								//for(int j=0;j<save_path.index;j++)
-								//	for(int k=0;k<10;k++)
-								//		System.out.print(save_path.path[j]+" ");
-								//	Delay.msDelay(5000);
-								//Delay.msDelay(60000);
-								break;///////////////////////////////////////end
+								LCD.clear();
+								LCD.drawString("ESCAPE!", 4, 3);
+								//System.out.println(save_path.index);
+								
+								sa_read.isRunning=false;
+								sa_read.isEscaping=false;
+								break;
 							}
 							else
 								color_sensor.getColorMove(color);
@@ -142,14 +151,13 @@ class EV3mazeescpae extends Thread{
 							color = color_sensor.getColor();
 							if(color_sensor.isBlackBarrier(color)){
 								wheel_actuator.stop();
-								System.out.println("ESCAPE!");
-								//for(int j=0;j<save_path.index;j++)
-								//	for(int k=0;k<10;k++)
-								//		System.out.print(save_path.path[j]+" ");
-								//	Delay.msDelay(5000);
-								//Delay.msDelay(60000);
+								LCD.clear();
+								LCD.drawString("ESCAPE!", 4, 3);
+								
+								sa_read.isRunning=false;
+								sa_read.isEscaping=false;
 								break;
-							}//////////////////////////////////////////////////////end
+							}
 							else
 								color_sensor.getColorMove(color);// 각 색깔에서 direction 바꿔주고 yellow는 path에 값 넣는거까지
 						}

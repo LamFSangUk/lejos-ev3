@@ -11,11 +11,11 @@ public class line_tracer {
 	}
 	public boolean isOnline(){
 		if(light_sensor.getLight() <= 0.4){
-			System.out.println(light_sensor.getLight());
+			//System.out.println(light_sensor.getLight());
 			return true;
 		}
 		else {
-			System.out.println(light_sensor.getLight());
+			//System.out.println(light_sensor.getLight());
 			return false;
 		}
 	}

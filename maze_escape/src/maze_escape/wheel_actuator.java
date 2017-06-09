@@ -20,7 +20,7 @@ public class wheel_actuator {
 	
 	static public void stop(){
 		pilot.quickStop();
-		System.out.println("Wheel_actuator::stop");
+		//System.out.println("Wheel_actuator::stop");
 		
 	}
 	static public void rotate(int angle) {
@@ -32,10 +32,4 @@ public class wheel_actuator {
 	 static public void rotateRight(){
 		rotate(90);
 	 }
-	 /*
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-	}
-*/
 }

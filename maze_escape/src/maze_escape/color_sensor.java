@@ -14,7 +14,7 @@ public class color_sensor {
 		SampleProvider color_itr = color_sensor.getColorIDMode();
 		float[] lightSample = new float[color_itr.sampleSize()];
 		color_itr.fetchSample(lightSample, 0);
-		System.out.println(lightSample[0]);
+		//System.out.println(lightSample[0]);
 		
 		return lightSample[0];
 	}
