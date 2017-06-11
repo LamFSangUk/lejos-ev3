@@ -1,7 +1,17 @@
 package maze_escape;
 
 public class save_path {
-	public static enum Direction {RIGHT,UP,LEFT,DOWN};
+	public static enum Direction {
+		RIGHT(0),UP(1),LEFT(2),DOWN(3);
+		private final int value;
+		private Direction(int value){
+			this.value=value;
+		}
+		public int getValue(){
+			return value;
+		}
+	
+	}
 	public static Direction[] path = new Direction[10000];
 	public static int index=0;
 	public static Direction current_dir;

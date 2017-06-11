@@ -4,20 +4,50 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import lejos.hardware.Bluetooth;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
+import lejos.remote.nxt.BTConnection;
 import lejos.remote.nxt.BTConnector;
 import lejos.remote.nxt.NXTConnection;
+import maze_escape.save_path.Direction;
 
 //Shared Data between two threads
 class SharedArea{
+	NXTConnection connection;
+	DataInputStream dis;
+	DataOutputStream dos;
 	public boolean isRunning;
 	public boolean isEscaping;
+	
+	public void send_res(Direction[] path){
+		//DataOutputStream dos = btc.openDataOutputStream();
+		
+		try {
+			LCD.drawInt(5,4,5);
+			dos.writeInt(5);
+			dos.flush();
+			dos.writeInt(save_path.index);
+			dos.flush();
+			for(int i=0;i<save_path.index;i++){
+				int send=path[i].getValue();
+				dos.writeInt(send);
+				dos.flush();
+			}
+			//dos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
 
 public class MainActivity{
-	static BTConnector connector = new BTConnector();
+	
 	
 	public static void main(String[] args) {
+		BTConnector connector = new BTConnector();
 		SharedArea sa = new SharedArea();
 		
 		EV3BTwaiting thread1 = new EV3BTwaiting();
@@ -25,13 +55,18 @@ public class MainActivity{
 		
 		sa.isRunning=true;
 		sa.isEscaping=false;
+		sa.connection=null;
+		sa.dis=null;
+		sa.dos=null;
 		thread1.sa_write = sa;
 		thread2.sa_read = sa;
 		
 		//Connect to android app with BT
 		LCD.drawString("ReadyforBT", 0, 1);
 		LCD.refresh();
-		thread1.btc = connector.waitForConnection(10000, NXTConnection.RAW);
+		sa.connection = connector.waitForConnection(10000, NXTConnection.RAW);
+		sa.dis=sa.connection.openDataInputStream();
+		sa.dos=sa.connection.openDataOutputStream();
 		LCD.clear();
 		LCD.drawString("Connected", 0, 1);
 		LCD.refresh();
@@ -46,19 +81,19 @@ public class MainActivity{
 class EV3BTwaiting extends Thread{
 	
 	SharedArea sa_write;
-	static NXTConnection btc;
+	//static NXTConnection btc;
 	
 	
 	public void run(){
 		// TODO Auto-generated method stub
 		// The InputStream for read data
 		
-		DataInputStream dis = btc.openDataInputStream();
+		//DataInputStream dis = btc.openDataInputStream();
 
 		Byte n;
 		try {
 			
-			n = dis.readByte();
+			n = sa_write.dis.readByte();
 			//System.out.println(dis.available());
 			System.out.println(n);
 			if (n==1) {
@@ -68,13 +103,14 @@ class EV3BTwaiting extends Thread{
 				sa_write.isEscaping = true;
 			
 			}
-			dis.close();
+			//dis.close();
 			
-			while (sa_write.isRunning) {
+			while (true) {
 
-				n = dis.readByte();
+				n = sa_write.dis.readByte();
 				if(n==-1) continue;
 				System.out.println(n);
+				
 				if (n == 2) {
 					LCD.clear();
 					LCD.drawString("STOP", 4, 4);
@@ -88,14 +124,16 @@ class EV3BTwaiting extends Thread{
 				} else if(n == 4){
 					LCD.clear();
 					LCD.drawString("END",4, 4);
+					Sound.beep();
+					Thread.sleep(5000);
 					break;
 				}
 				
-				dis.close();
+				//dis.close();
 
 			}
 
-			dis.close();
+			//dis.close();
 
 			//Wait for data to drain
 			//Thread.sleep(100);
@@ -104,7 +142,7 @@ class EV3BTwaiting extends Thread{
 			LCD.drawString("Closing", 4, 4);
 			LCD.refresh();
 
-			btc.close();
+			//btc.close();
 
 			//LCD.clear();
 			// }
@@ -112,22 +150,13 @@ class EV3BTwaiting extends Thread{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-	}
-	public static void send_res(){
-		DataOutputStream dos = btc.openDataOutputStream();
-		
-		try {
-			LCD.drawInt(5,4,5);
-			dos.writeInt(5);
-			dos.flush();
-		} catch (IOException e) {
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 	}
+	
 }
 
 class EV3mazeescpae extends Thread{
@@ -157,7 +186,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
-								EV3BTwaiting.send_res();
+								sa_read.send_res(save_path.path);
 								break;
 							}
 							else
@@ -178,7 +207,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
-								EV3BTwaiting.send_res();
+								sa_read.send_res(save_path.path);
 								break;
 							}
 							else
