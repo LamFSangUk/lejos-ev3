@@ -7,7 +7,6 @@ import lejos.robotics.SampleProvider;
 
 public class color_sensor {
 	
-	
 	static EV3ColorSensor color_sensor = new EV3ColorSensor(SensorPort.S3);
 
 	public static float getColor(){

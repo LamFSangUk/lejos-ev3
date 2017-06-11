@@ -58,6 +58,7 @@ public class MainActivity{
 		sa.connection=null;
 		sa.dis=null;
 		sa.dos=null;
+		
 		thread1.sa_write = sa;
 		thread2.sa_read = sa;
 		
@@ -186,6 +187,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
+								System.out.println(save_path.index);
 								sa_read.send_res(save_path.path);
 								break;
 							}
@@ -207,6 +209,7 @@ class EV3mazeescpae extends Thread{
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
+								System.out.println(save_path.index);
 								sa_read.send_res(save_path.path);
 								break;
 							}
