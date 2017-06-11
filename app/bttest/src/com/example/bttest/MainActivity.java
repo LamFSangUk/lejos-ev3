@@ -21,24 +21,14 @@ import android.widget.Toast;
 import lejos.remote.ev3.RemoteRequestEV3;
 
 public class MainActivity extends Activity {
-    private BluetoothAdapter mBtAdapter;
-    private static BluetoothDevice mDevice;
-    private static BluetoothSocket mSocket=null;
-    private RemoteRequestEV3 ev3;
-    private static String mMessage = "Stop";
-    
-    //private static PrintStream sender;
     
     private btcomm mBT = new btcomm();
-    
-    //private final static String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
-    
-    public static final int REQUEST_ENABLE_BT=2;
+        
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
         findViewById(R.id.button_bt).setOnClickListener(
                 new Button.OnClickListener(){
                     public void onClick(View v){
@@ -59,48 +49,43 @@ public class MainActivity extends Activity {
                         }
                     }
                 }
-        );
-        findViewById(R.id.button_start).setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        //new Control().execute("start");
-                    	try {
-							mBT.writeMessage("S", "ev3");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                    }
-                }
-        );
-        findViewById(R.id.button_stop).setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        //new Control().execute("stop");
-                    	try {
-							mBT.writeMessage("P", "ev3");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                    }
+		);
+		findViewById(R.id.button_start).setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				// new Control().execute("start");
 
-                }
-        );
-        findViewById(R.id.button_restart).setOnClickListener(
-                new Button.OnClickListener(){
-                    public void onClick(View v){
-                        //new Control().execute("restart");
-                    	try {
-							mBT.writeMessage("R", "ev3");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                    }
-                }
-        );
+				Byte n = 1;
+				mBT.sendByte(n);
+			}
+		});
+		findViewById(R.id.button_stop).setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				// new Control().execute("stop");
+
+				Byte n = 2;
+				mBT.sendByte(n);
+			}
+
+		});
+		findViewById(R.id.button_restart).setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				// new Control().execute("restart");
+
+				Byte n = 3;
+				mBT.sendByte(n);
+			}
+		});
 
     }
     
+    public static void printData(int data){
+    	//ToastData(data);
+    	Log.v("RESULTEV3", Integer.toString(data));
+    }
+   // public void ToastData(int data){
+    	//Toast.makeText(getApplicationContext(), Integer.toString(data), Toast.LENGTH_LONG).show();
+
+    //}
+    
 }
+
