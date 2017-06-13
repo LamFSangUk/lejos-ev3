@@ -3,23 +3,57 @@ package maze_escape;
 
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.SampleProvider;
 
 public class color_sensor {
 	
-	static EV3ColorSensor color_sensor = new EV3ColorSensor(SensorPort.S3);
+	   private static EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S3);
+	   private static SensorMode colorMode = colorSensor.getRGBMode();
+	   private static float[] colorValue = new float[colorMode.sampleSize()];   
+	   final static float RED_THRES = 0.2f;
+	   final static float BLACK_THRES_MIN = 0.01f;
+	   final static float BLACK_THRES_MAX = 0.04f;
+	   final static float BLUE_THRES = 0.1f;
+	   final static float YELLOW_THRES = 0.1f;
+	   final static float GREEN_THRES = 0.1f;
+	   final static int RED = 0;
+	   final static int BLACK = 1;
+	   final static int BLUE = 2;
+	   final static int YELLOW = 3;
+	   final static int GREEN = 4;
+	
 
 	public static float getColor(){
-		SampleProvider color_itr = color_sensor.getColorIDMode();
-		float[] lightSample = new float[color_itr.sampleSize()];
-		color_itr.fetchSample(lightSample, 0);
-		//System.out.println(lightSample[0]);
-		
-		return lightSample[0];
-	}
+		colorMode.fetchSample(colorValue, 0);
+		   System.out.println(colorValue[0]);
+		   System.out.println(colorValue[1]);
+		   System.out.println(colorValue[2]);
+		   System.out.println("Hello");
+	      if (colorValue[0] > YELLOW_THRES && colorValue[1] > YELLOW_THRES) {
+	         return YELLOW;
+	      }
+	      else if (colorValue[0] > RED_THRES) {
+	         return RED;
+	      }
+	      else if (BLACK_THRES_MIN < colorValue[0] && colorValue[0] < BLACK_THRES_MAX 
+	            && BLACK_THRES_MIN < colorValue[1] && colorValue[1] < BLACK_THRES_MAX 
+	            && BLACK_THRES_MIN < colorValue[2] && colorValue[2] < BLACK_THRES_MAX) {
+	         return BLACK;
+	      }
+	      else if (colorValue[2] > BLUE_THRES) {
+	         return BLUE;
+	      }
+	      else if (colorValue[1] > GREEN_THRES){
+	         return GREEN;
+	      }
+	      else
+	         return -1;
+	 }
+	
 		
 	public static boolean isBlackBarrier(float color){
-		if(color == 7){
+		if(color == BLACK){
 			return true;
 		}
 		return false;
@@ -45,60 +79,64 @@ public class color_sensor {
 	}
 
 	private static void moveYellow() {
-		// TODO Auto-generated method stub
 		int i;
-		for(i=0;i<2;i++){
+		/*for(i=0;i<2;i++){
 			wheel_actuator.rotate(27);
 			wheel_actuator.forward(0.5);
-		}
-		wheel_actuator.rotate(32);
-		save_path.angle +=86;
+		}*/
+		wheel_actuator.rotate(90);
+		save_path.angle +=90;
 		save_path.changeDirection(save_path.angle);
 		
-		wheel_actuator.forward(0.5);
-		wheel_actuator.forward(6);
-		save_path.saveToPath(save_path.current_dir);
-		save_path.saveToPath(save_path.current_dir);
+		//wheel_actuator.forward(0.5);
+		wheel_actuator.forward(7.5);
+		for (int j=0; j<30; j++)
 		save_path.saveToPath(save_path.current_dir);
 		
-		for(i=0;i<2;i++){
+		/*for(i=0;i<2;i++){
 			wheel_actuator.rotate(-27);
 			wheel_actuator.forward(0.5);
-		}
-		wheel_actuator.rotate(-27);
-		save_path.angle -=81;
+		}*/
+		wheel_actuator.rotate(-90);
+		save_path.angle -=90;
 		save_path.changeDirection(save_path.angle);
 
-		wheel_actuator.forward(0.5);
-		wheel_actuator.forward(3.5);
+		//wheel_actuator.forward(0.5);r
+		wheel_actuator.forward(7);
+		for (int j=0; j<28; j++)
+			save_path.saveToPath(save_path.current_dir);
+		
+		wheel_actuator.rotate(90);
+		save_path.angle +=90;
+		save_path.changeDirection(save_path.angle);
 		save_path.saveToPath(save_path.current_dir);
-		save_path.saveToPath(save_path.current_dir);
+		
+		
 	}
 
 	private static void moveBlue() {
-		// TODO Auto-generated method stub
 		int i;
-		for (i=0;i<2;i++){
+		/*for (i=0;i<2;i++){
 			wheel_actuator.rotate(-33);
 			wheel_actuator.forward(0.5);	
-		}
-		wheel_actuator.rotate(-34);
-		save_path.angle -=100;
+		}*/
+		wheel_actuator.rotate(-90);
+		save_path.angle -=90;
 		save_path.changeDirection(save_path.angle);
 		
-		wheel_actuator.forward(0.5);	
+	//	wheel_actuator.forward(0.5);	
 		wheel_actuator.forward(wheel_actuator.one_block);
 		save_path.saveToPath(save_path.current_dir);
 	}
 
 	private static void moveRed() {
-		// TODO Auto-generated method stub
 		int i;
-		for(i=0;i<3;i++){
-			wheel_actuator.rotate(27);
+	/*	for(i=0;i<3;i++){
+			wheel_actuator.rotate(33);
 			wheel_actuator.forward(0.5);
-		}
-		save_path.angle +=81;
+		}*/
+		wheel_actuator.rotate(90);
+		save_path.angle +=90;
 		save_path.changeDirection(save_path.angle);
 
 		wheel_actuator.forward(wheel_actuator.one_block);

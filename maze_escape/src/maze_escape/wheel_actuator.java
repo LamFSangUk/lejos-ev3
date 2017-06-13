@@ -5,9 +5,9 @@ import lejos.robotics.navigation.DifferentialPilot;
 
 public class wheel_actuator {
 	static DifferentialPilot pilot = new DifferentialPilot(2.1f,4.4f,Motor.B,Motor.C);
-	public static final double one_block = 2;
+	public static final double one_block = 0.25;
 	static public void set_speed(){
-		pilot.setTravelSpeed(5);
+		pilot.setTravelSpeed(3);
 	}
 	
 	static public void forward(double range){

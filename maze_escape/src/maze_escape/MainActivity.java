@@ -166,25 +166,27 @@ class EV3mazeescpae extends Thread{
 	public void run() {
 		
 		float color;
+		int find_angle=1;
+		int j;
+		int flag=1;
+		
 		line_tracer tracer = new line_tracer();
 		save_path.changeDirection(save_path.angle);
 		while (sa_read.isRunning) {
 			while (sa_read.isEscaping) {
-				System.out.println("There");
 				color = color_sensor.getColor();
 				if(color!=-1){ // 벽이 있는 경우
 				
 					if(tracer.isOnline()){		
-						
+						find_angle=1;
 						if(color_sensor.isBlackBarrier(color)){
-							wheel_actuator.forward(1);
-							color = color_sensor.getColor();
+							
+							/*wheel_actuator.forward(1);
+							color = color_sensor.getColor();*/
 							if(color_sensor.isBlackBarrier(color)){
 								wheel_actuator.stop();
-								LCD.clear();
-								LCD.drawString("ESCAPE!", 4, 3);
-								//System.out.println(save_path.index);
-								
+								System.out.println("ESCAPE!");
+
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
 								System.out.println(save_path.index);
@@ -200,17 +202,18 @@ class EV3mazeescpae extends Thread{
 					}
 					else{
 						if(color_sensor.isBlackBarrier(color)){
-							wheel_actuator.forward(1);
-							color = color_sensor.getColor();
+							
+							/*wheel_actuator.forward(1);
+							color = color_sensor.getColor();*/
 							if(color_sensor.isBlackBarrier(color)){
 								wheel_actuator.stop();
-								LCD.clear();
-								LCD.drawString("ESCAPE!", 4, 3);
+								System.out.println("ESCAPE!");
 								
 								sa_read.isRunning=false;
 								sa_read.isEscaping=false;
 								System.out.println(save_path.index);
 								sa_read.send_res(save_path.path);
+								
 								break;
 							}
 							else
@@ -224,17 +227,35 @@ class EV3mazeescpae extends Thread{
 				else if(color==-1) // 벽이 없는 경우
 				{
 					if(tracer.isOnline()){		
+						find_angle=1;
 						wheel_actuator.forward(wheel_actuator.one_block);	// path 에 direction넣어줌
 						save_path.saveToPath(save_path.current_dir);
 					}
 					else{
 						
-						wheel_actuator.rotate(5);	// angle 값을 갱신한다
-						save_path.angle +=5;
+						while(!tracer.isOnline()){
+							/*for (j=0;j<=find_angle;j=j+2){
+								if (tracer.isOnline()){
+									save_path.angle +=find_angle;
+									save_path.changeDirection(save_path.angle);
+									break;
+								}*/
+							
+							
+								find_angle=Math.abs(find_angle);
+								find_angle+=1;
+								flag*=-1;
+								find_angle=find_angle * flag;
+								wheel_actuator.rotate(find_angle);
+								
+							//wheel_actuator.rotate(find_angle);
+							//ind_angle=-(find_angle*2);
+						}
+						//wheel_actuator.rotate(find_angle);	// angle 값을 갱신한다
+						save_path.angle +=find_angle;
 						save_path.changeDirection(save_path.angle);
 					}
 				}
-
 			}
 		}
 	}
