@@ -15,6 +15,8 @@ public final class R {
         public static final int button_restart=0x7f060002;
         public static final int button_start=0x7f060001;
         public static final int button_stop=0x7f060003;
+        public static final int canvas=0x7f060004;
+        public static final int path=0x7f060005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

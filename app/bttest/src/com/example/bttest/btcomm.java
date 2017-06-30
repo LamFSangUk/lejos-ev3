@@ -77,8 +77,9 @@ public class btcomm {
     							  getValue=is.read();
     						  }
     						  Log.d("reading",Integer.toString(getValue));
-    						  MainActivity.printData(getValue);
-    					  }
+    						  MainActivity.saveData(getValue);
+    					  }    						 
+    					  
     					  Byte send_byte=4;
     					  os.write(send_byte);
     					  os.flush();
@@ -109,24 +110,3 @@ public class btcomm {
 	}
   }
 }
-
-/*class ResultWaiting extends Thread{
-	public void run(){
-		int n;
-		while(true){
-			n=btcomm.readMessage("ev3");
-			Log.e("Er",Integer.toString(n));
-			if(n==5){
-				Log.d("OK","OK");
-				Byte send=4;
-				try {
-					Log.d("Waiting", "HERE");
-					btcomm.writeMessage(send,"ev3");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-}*/

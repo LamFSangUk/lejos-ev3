@@ -6,20 +6,20 @@
 
     <Button
         android:id="@+id/button_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="44dp"
         android:layout_marginTop="32dp"
         tools:layout_editor_absoluteX="39dp"
         tools:layout_editor_absoluteY="42dp"
-        android:text="check" />
+        android:text="Connect" />
 
     <Button
         android:id="@+id/button_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_alignLeft="@+id/button_bt"
         android:layout_below="@+id/button_bt"
         android:layout_marginTop="10dp"
@@ -29,8 +29,8 @@
 
     <Button
         android:id="@+id/button_restart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_alignLeft="@+id/button_stop"
         android:layout_below="@+id/button_stop"
         android:layout_marginTop="10dp"
@@ -40,13 +40,32 @@
 
     <Button
         android:id="@+id/button_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_alignLeft="@+id/button_start"
         android:layout_below="@+id/button_start"
         android:layout_marginTop="10dp"
         tools:layout_editor_absoluteX="254dp"
         tools:layout_editor_absoluteY="126dp"
-        android:text="Stop" />
+        android:text="Pause" />
+
+    <ImageView
+        android:id="@+id/canvas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="260dp"
+        android:background="#FFFFFF" />
+
+    <Button
+        android:id="@+id/path"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignTop="@+id/button_start"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/canvas"
+        android:text="Print\nPath" />
 
 </RelativeLayout>
